@@ -133,3 +133,54 @@
 (check-equal? (product '(a b c) '(x y)) '((a x) (a y) (b x) (b y) (c x) (c y)))
 
 ;ex 1.22
+
+;Pred → Listof(SchemeVal) → Listof(SchemeVal)
+(define (filter-in pred lst)
+  (reverse (filter-in-helper pred lst '())))
+
+(define (filter-in-helper pred lst res)
+  (cond
+    [(empty? lst) res]
+    [(pred (first lst)) (filter-in-helper pred (rest lst)(cons (first lst) res))]
+    [else (filter-in-helper pred (rest lst) res)]))
+
+(check-equal? (filter-in number? '(a 2 (1 3) b 7)) '(2 7))
+(check-equal? (filter-in symbol? '(a (b c) 17 foo)) '(a foo))
+
+;ex 1.23
+
+(define (list-index? pred lst)
+  (list-index-helper pred lst 0))
+
+(define (list-index-helper pred lst n)
+  (cond
+    [(empty? lst) #f]
+    [(pred (first lst)) n]
+    [else (list-index-helper pred (rest lst) (+ n 1))]))
+
+(check-equal? (list-index? number? '(a 2 (1 3) b 7)) 1)
+(check-equal? (list-index? symbol? '(a (b c) 17 foo)) 0 )
+(check-equal? (list-index? symbol? '(1 2 (a b) 3)) #f)
+
+;ex 1.24
+
+(define (every? pred lst)
+  (cond
+    [(empty? lst) #t]
+    [(not (pred (first lst))) #f]
+    [else (every? pred (rest lst))]))
+
+(check-equal? (every? number? '(a b c 3 e)) #f)
+(check-equal? (every? number? '(1 2 3 4 5)) #t)
+
+;ex 1.25
+
+(define (exists? pred lst)
+  (cond
+    [(empty? lst) #f]
+    [(pred (first lst)) #t]
+    [else (exists? pred (rest lst))]))
+
+(check-equal? (exists? number? '(a b c 3 e)) #t)
+(check-equal? (exists? number? '(1 2 3 4 5)) #t)
+(check-equal? (exists? number? '(a b c d e)) #f)
