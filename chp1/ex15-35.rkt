@@ -184,3 +184,12 @@
 (check-equal? (exists? number? '(a b c 3 e)) #t)
 (check-equal? (exists? number? '(1 2 3 4 5)) #t)
 (check-equal? (exists? number? '(a b c d e)) #f)
+
+(define (up lst)
+  (cond
+    [(empty? lst) '()]
+    [(list? (first lst)) (append (append '() (first lst)) (up (rest lst)))]
+    [else (cons (first lst) (up (rest lst)))]))
+
+(check-equal? (up '((1 2) (3 4))) '(1 2 3 4))
+(check-equal? (up '((x (y)) z)) '(x (y) z))
