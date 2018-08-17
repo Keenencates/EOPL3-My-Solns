@@ -382,5 +382,62 @@
                                      ())
                                  (31 () ()))))
               '(right left left))
-    
-      
+
+; ex 1.35
+
+(define (number-leaves bintree)
+  (number-leaves-helper bintree 0))
+
+(define (count-leaves bintree)
+  (cond
+    [(empty? bintree) 0]
+    [(leaf? bintree) 1]
+    [(interior-node? bintree) (+ (count-leaves (lson bintree)) (count-leaves (rson bintree)))]))
+
+(define (number-leaves-helper bintree n)
+  (cond
+    [(empty? bintree)'()]
+    [(leaf? bintree) (leaf n)]
+    [(interior-node? bintree)(interior-node (contents-of bintree)
+                                            (number-leaves-helper (lson bintree) n)
+                                            (number-leaves-helper (rson bintree) (+ n (count-leaves (lson bintree)))))]))
+
+(check-equal? (number-leaves
+               (interior-node
+                'foo
+                (interior-node
+                 'bar
+                 (leaf 26)
+                 (leaf 12))
+                (interior-node
+                 'baz
+                 (leaf 11)
+                 (interior-node
+                  'quux
+                  (leaf 117)
+                  (leaf 14)))))
+              (interior-node
+                'foo
+                (interior-node
+                 'bar
+                 (leaf 0)
+                 (leaf 1))
+                (interior-node
+                 'baz
+                 (leaf 2)
+                 (interior-node
+                  'quux
+                  (leaf 3)
+                  (leaf 4)))))
+
+;ex 1.36
+
+(define (g f r)
+  (cons f (map (lambda (x) (list (+ 1 (first x)) (second x))) r)))
+
+(define (number-elements lst)
+  (if (empty? lst)
+      '()
+      (g (list 0 (car lst)) (number-elements (cdr lst)))))
+
+(number-elements '(a b c d e))
